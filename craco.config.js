@@ -6,6 +6,8 @@ module.exports = {
     // 配置别名
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "@router": path.resolve(__dirname, "src/router"),
+      "@pages": path.resolve(__dirname, "src/pages"),
     },
   },
 };
