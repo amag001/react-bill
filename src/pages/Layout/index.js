@@ -1,11 +1,17 @@
-import { Button } from "antd-mobile";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { getBillList } from "@store/modules/billStore";
 
 const Layout = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getBillList());
+  }, [dispatch]);
   return (
     <>
       <Outlet></Outlet>
-      <Button color="primary">111111112</Button>
+
       <div>我是Layout</div>
     </>
   );
