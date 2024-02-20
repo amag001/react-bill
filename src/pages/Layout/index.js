@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { getBillList } from "@store/modules/billStore";
 import { TabBar } from "antd-mobile";
 import {
@@ -11,9 +11,14 @@ import {
 import "./index.scss";
 const Layout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(getBillList());
   }, [dispatch]);
+  // 切换页面
+  const swithRouter = (path) => {
+    navigate(path);
+  };
   const tabs = [
     {
       key: "/month",
@@ -37,7 +42,7 @@ const Layout = () => {
         <Outlet />
       </div>
       <div className="footer">
-        <TabBar>
+        <TabBar onChange={swithRouter}>
           {tabs.map((item) => (
             <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
           ))}
