@@ -1,14 +1,29 @@
 import { NavBar, DatePicker } from "antd-mobile";
 import "./index.scss";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import classNames from "classnames";
+import { useSelector } from "react-redux";
+import _ from "lodash";
 
 const Month = () => {
   const [visible, setVisible] = useState(false);
   const [billYear, setBillYear] = useState(dayjs().year());
   const [billMonth, setBillMonth] = useState(dayjs().month() + 1);
 
+  // 按月做数据的分组
+  const billList = useSelector((state) => state.bill.billList);
+  const monthGroup = useMemo(() => {
+    // return出去计算之后的值
+    return _.groupBy(billList, (item) => dayjs(item.date).format("YYYY-MM"));
+  }, [billList]);
+  console.log(monthGroup);
+  // 选择月份
+  const onConfirm = (val) => {
+    setBillMonth(dayjs(val).month() + 1);
+    setBillYear(dayjs(val).year());
+    // 其他逻辑
+  };
   return (
     <div className="monthlyBill">
       <NavBar className="nav" backArrow={false}>
@@ -51,8 +66,7 @@ const Month = () => {
               setVisible(false);
             }}
             onConfirm={(val) => {
-              setBillMonth(dayjs(val).month() + 1);
-              setBillYear(dayjs(val).year());
+              onConfirm(val);
             }}
             precision="month"
             visible={visible}
