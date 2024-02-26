@@ -4,34 +4,39 @@ import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
+import DailyBill from "./components/DayBill/index";
 import _ from "lodash";
 
 const Month = () => {
   const [visible, setVisible] = useState(false);
-  const [billYear, setBillYear] = useState(dayjs().year());
-  const [billMonth, setBillMonth] = useState(dayjs().month() + 1);
+  const [billYear, setBillYear] = useState();
+  const [billMonth, setBillMonth] = useState();
 
   // 所有的数据
   const billList = useSelector((state) => state.bill.billList);
 
   // 按月做数据的分组
   const monthGroup = useMemo(() => {
-    console.log(222);
     // return出去计算之后的值
     return _.groupBy(billList, (item) => dayjs(item.date).format("YYYY-M"));
   }, [billList]);
-  console.log(monthGroup);
   // 页面初始化时显示当前日期的账单数据
-  // useEffect(() => {}, []);
+  useEffect(() => {
+    setBillMonth(dayjs().month() + 1);
+    setBillYear(dayjs().year());
+  }, []);
   /**
    * 1,根据所选日期获得当前日期的账单。
    * 2,当日账单数据发生变化时，使用useMemo返回页面所需数据{pay:'xxx',inCome:'xxx',total:'xxx'}
    */
   // 使用useEemo,类似计算属性，年和月变换时返回当前年月的账单。
   const overview = useMemo(() => {
-    console.log(billMonth, billYear);
-    const currentMonthList = monthGroup[billYear + "-" + (billMonth + 1)];
+    const currentMonthList = monthGroup[billYear + "-" + billMonth];
     if (!currentMonthList) return { income: 0, pay: 0, total: 0 };
+    console.log(currentMonthList);
+    const dayGroup = _.groupBy(currentMonthList, (item) =>
+      dayjs(item.date).format("YYYY-M-DD")
+    );
     const pay = currentMonthList
       .filter((item) => item.type === "pay")
       .reduce((accumulator, currentValue) => {
@@ -48,13 +53,16 @@ const Month = () => {
       pay,
       income,
       total: pay + income,
+      dayGroup,
     };
   }, [monthGroup, billYear, billMonth]);
+  // console.log("overview", overview);
   // 选择月份
   const onConfirm = (val) => {
     setBillMonth(dayjs(val).month() + 1);
     setBillYear(dayjs(val).year());
   };
+
   return (
     <div className="monthlyBill">
       <NavBar className="nav" backArrow={false}>
@@ -104,6 +112,8 @@ const Month = () => {
             max={new Date()}
           />
         </div>
+        {/* 单日列表统计 */}
+        <DailyBill dayList={overview.dayGroup}></DailyBill>
       </div>
     </div>
   );
