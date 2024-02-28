@@ -7,14 +7,19 @@ const billStore = createSlice({
     billList: [],
   },
   reducers: {
+    // 设置账单数据
     setBillList(state, actions) {
       state.billList = actions.payload;
+    },
+    // 添加账单数据
+    addBillList(state, actions) {
+      state.billList.push(actions.payload);
     },
   },
 });
 
 // 结构出actions函数
-const { setBillList } = billStore.actions;
+const { setBillList, addBillList } = billStore.actions;
 
 // 编写异步函数
 const getBillList = () => {
@@ -23,8 +28,19 @@ const getBillList = () => {
     dispatch(setBillList(res.data));
   };
 };
-
+// 添加账单列表
+const addBill = (data) => {
+  return async (dispatch) => {
+    try {
+      let res = await axios.post("http://localhost:8888/ka", data);
+      console.log(res);
+      dispatch(addBillList(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 // 导出这个store（reducer）用于index.js组合用
 const billReducer = billStore.reducer;
-export { setBillList, getBillList };
+export { setBillList, getBillList, addBill };
 export default billReducer;
