@@ -18,9 +18,10 @@ const billStore = createSlice({
   },
 });
 
-// 结构出actions函数
+// 结构出actions
 const { setBillList, addBillList } = billStore.actions;
-
+console.log(setBillList());
+// setBillList() 为{type: 'bill/setBillList', payload: 'xxx'}这种模板，供dispatch触发用。
 // 编写异步函数
 const getBillList = () => {
   return async (dispatch) => {

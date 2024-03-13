@@ -6,14 +6,14 @@ import classNames from "classnames";
 import { useSelector } from "react-redux";
 import DailyBill from "./components/DayBill/index";
 import _ from "lodash";
+import store from "@store/index.js";
 
 const Month = () => {
   const [visible, setVisible] = useState(false);
   const [billYear, setBillYear] = useState();
   const [billMonth, setBillMonth] = useState();
-
+  console.log("store", store.getState());
   // 所有的数据
-  const billList = useSelector((state) => state.bill.billList);
 
   // 按月做数据的分组
   const monthGroup = useMemo(() => {
