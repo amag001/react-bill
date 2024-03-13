@@ -14,6 +14,7 @@ const Month = () => {
   const [billMonth, setBillMonth] = useState();
   console.log("store", store.getState());
   // 所有的数据
+  const billList = useSelector((state) => state.bill.billList);
 
   // 按月做数据的分组
   const monthGroup = useMemo(() => {
